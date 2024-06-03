@@ -25,10 +25,5 @@ public class File {
     @OneToMany(mappedBy = "file")
     private List<FileMessage> fileMessages;
 
-    @OneToOne(mappedBy = "profileImage")
-    private Member member;
-
-    @OneToOne(mappedBy = "profileImageFile")
-    private Friend friend;
 
 }

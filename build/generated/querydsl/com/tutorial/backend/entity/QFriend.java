@@ -20,17 +20,17 @@ public class QFriend extends EntityPathBase<Friend> {
 
     private static final PathInits INITS = PathInits.DIRECT2;
 
-    public static final QFriend friend1 = new QFriend("friend1");
+    public static final QFriend friend = new QFriend("friend");
 
-    public final QMember friend;
+    public final QMember friendId;
 
     public final NumberPath<Integer> id = createNumber("id", Integer.class);
 
     public final StringPath isRegistered = createString("isRegistered");
 
-    public final StringPath nickname = createString("nickname");
+    public final QMember member;
 
-    public final QFile profileImageFile;
+    public final StringPath nickname = createString("nickname");
 
     public QFriend(String variable) {
         this(Friend.class, forVariable(variable), INITS);
@@ -50,8 +50,8 @@ public class QFriend extends EntityPathBase<Friend> {
 
     public QFriend(Class<? extends Friend> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.friend = inits.isInitialized("friend") ? new QMember(forProperty("friend"), inits.get("friend")) : null;
-        this.profileImageFile = inits.isInitialized("profileImageFile") ? new QFile(forProperty("profileImageFile"), inits.get("profileImageFile")) : null;
+        this.friendId = inits.isInitialized("friendId") ? new QMember(forProperty("friendId")) : null;
+        this.member = inits.isInitialized("member") ? new QMember(forProperty("member")) : null;
     }
 
 }

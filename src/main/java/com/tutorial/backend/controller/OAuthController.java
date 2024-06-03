@@ -27,13 +27,14 @@ public class OAuthController {
     @GetMapping("/oauth/loginInfo")
     public void onAuthenticationSuccess(HttpServletResponse response,
                                         @RequestParam String email,
-                                        @RequestParam String name) throws IOException {
+                                        @RequestParam String name,
+                                        @RequestParam String phone,
+                                        @RequestParam String profile) throws IOException {
         // 토큰 발행
-        TokenDto tokenDto = authService.socialLogin(email, name);
-
+        TokenDto tokenDto = authService.socialLogin(email, name, phone);
         String accessToken = tokenDto.getAccessToken();
         String refreshToken = tokenDto.getRefreshToken();
-        log.info("여기까진 잘옴");
+
 
         // 토큰 정보를 포함하여 리다이렉트
         String redirectUrl = UriComponentsBuilder.fromUriString(REDIRECT_URI)

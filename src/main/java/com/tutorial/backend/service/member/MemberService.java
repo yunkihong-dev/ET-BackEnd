@@ -10,6 +10,7 @@ public interface MemberService {
 
     Member saveMember(JoinForm loginForm);
 
+    Optional<Member> getMemberByPhoneNumber(String phoneNumber);
 
     Optional<Member> getMemberByMemberEmailAndMemberName(String memberEmail, String memberName);
 

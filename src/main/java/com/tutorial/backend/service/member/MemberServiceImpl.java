@@ -30,6 +30,11 @@ public class MemberServiceImpl implements MemberService {
         return toEntity(loginForm);
     }
 
+    @Override
+    public Optional<Member> getMemberByPhoneNumber(String phoneNumber) {
+        return memberRepository.findByMemberPhoneContaining(phoneNumber);
+    }
+
 
     @Override
     public Optional<Member> getMemberByMemberEmailAndMemberName(String memberEmail, String memberName) {

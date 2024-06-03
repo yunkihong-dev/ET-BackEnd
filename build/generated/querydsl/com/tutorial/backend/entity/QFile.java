@@ -18,8 +18,6 @@ public class QFile extends EntityPathBase<File> {
 
     private static final long serialVersionUID = -2135542998L;
 
-    private static final PathInits INITS = PathInits.DIRECT2;
-
     public static final QFile file = new QFile("file");
 
     public final ListPath<FileMessage, QFileMessage> fileMessages = this.<FileMessage, QFileMessage>createList("fileMessages", FileMessage.class, QFileMessage.class, PathInits.DIRECT2);
@@ -32,36 +30,22 @@ public class QFile extends EntityPathBase<File> {
 
     public final StringPath fileType = createString("fileType");
 
-    public final QFriend friend;
-
     public final NumberPath<Integer> id = createNumber("id", Integer.class);
-
-    public final QMember member;
 
     public final StringPath status = createString("status");
 
     public final StringPath uuid = createString("uuid");
 
     public QFile(String variable) {
-        this(File.class, forVariable(variable), INITS);
+        super(File.class, forVariable(variable));
     }
 
     public QFile(Path<? extends File> path) {
-        this(path.getType(), path.getMetadata(), PathInits.getFor(path.getMetadata(), INITS));
+        super(path.getType(), path.getMetadata());
     }
 
     public QFile(PathMetadata metadata) {
-        this(metadata, PathInits.getFor(metadata, INITS));
-    }
-
-    public QFile(PathMetadata metadata, PathInits inits) {
-        this(File.class, metadata, inits);
-    }
-
-    public QFile(Class<? extends File> type, PathMetadata metadata, PathInits inits) {
-        super(type, metadata, inits);
-        this.friend = inits.isInitialized("friend") ? new QFriend(forProperty("friend"), inits.get("friend")) : null;
-        this.member = inits.isInitialized("member") ? new QMember(forProperty("member"), inits.get("member")) : null;
+        super(File.class, metadata);
     }
 
 }

@@ -47,7 +47,7 @@ public class QChattingHeader extends EntityPathBase<ChattingHeader> {
     public QChattingHeader(Class<? extends ChattingHeader> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.chatRoom = inits.isInitialized("chatRoom") ? new QChatRoom(forProperty("chatRoom")) : null;
-        this.member = inits.isInitialized("member") ? new QMember(forProperty("member"), inits.get("member")) : null;
+        this.member = inits.isInitialized("member") ? new QMember(forProperty("member")) : null;
     }
 
 }

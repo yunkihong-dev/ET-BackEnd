@@ -20,9 +20,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 
-/*
-    OAuth2 로그인 성공시 DB에 저장하는 작업
- */
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -33,18 +30,14 @@ public class OAuthService implements OAuth2UserService<OAuth2UserRequest, OAuth2
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         OAuth2UserService delegate = new DefaultOAuth2UserService();
-        OAuth2User oAuth2User = delegate.loadUser(userRequest); // OAuth 서비스(kakao, google, naver)에서 가져온 유저 정보를 담고있음
+        OAuth2User oAuth2User = delegate.loadUser(userRequest);
 
-        String registrationId = userRequest.getClientRegistration()
-                .getRegistrationId(); // OAuth 서비스 이름(ex. kakao, naver, google)
+        String registrationId = userRequest.getClientRegistration().getRegistrationId();
         String userNameAttributeName = userRequest.getClientRegistration()
-                .getProviderDetails()
-                .getUserInfoEndpoint()
-                .getUserNameAttributeName(); // OAuth 로그인 시 키(pk)가 되는 값
-        Map<String, Object> attributes = oAuth2User.getAttributes(); // OAuth 서비스의 유저 정보들
+                .getProviderDetails().getUserInfoEndpoint().getUserNameAttributeName();
+        Map<String, Object> attributes = oAuth2User.getAttributes();
 
-        MemberProfile memberProfile = OAuthAttributes.extract(registrationId, attributes); // registrationId에 따라 유저 정보를 통해 공통된 UserProfile 객체로 만들어 줌
-        memberProfile.setProvider(registrationId);
+        MemberProfile memberProfile = OAuthAttributes.extract(registrationId, attributes);
         Member member = saveOrUpdate(memberProfile);
 
         Map<String, Object> customAttribute = customAttribute(attributes, userNameAttributeName, memberProfile, registrationId);
@@ -53,33 +46,31 @@ public class OAuthService implements OAuth2UserService<OAuth2UserRequest, OAuth2
                 Collections.singleton(new SimpleGrantedAuthority("USER")),
                 customAttribute,
                 userNameAttributeName);
-
     }
 
-    private Map customAttribute(Map attributes, String userNameAttributeName, MemberProfile memberProfile, String registrationId) {
+    private Map<String, Object> customAttribute(Map<String, Object> attributes, String userNameAttributeName, MemberProfile memberProfile, String registrationId) {
         Map<String, Object> customAttribute = new LinkedHashMap<>();
         customAttribute.put(userNameAttributeName, attributes.get(userNameAttributeName));
         customAttribute.put("provider", registrationId);
         customAttribute.put("name", memberProfile.getName());
         customAttribute.put("email", memberProfile.getEmail());
+        customAttribute.put("phone", memberProfile.getPhoneNum());
+        customAttribute.put("profile_image_url", memberProfile.getProfileImageUrl());
         return customAttribute;
-
     }
 
     private Member saveOrUpdate(MemberProfile memberProfile) {
-        // 이메일을 기준으로 회원을 조회합니다.
         Optional<Member> optionalMember = memberRepository.findByMemberEmail(memberProfile.getEmail());
 
         if (optionalMember.isPresent()) {
             Member existingMember = optionalMember.get();
-            existingMember.update(memberProfile.getName(), memberProfile.getEmail());
+            existingMember.update(memberProfile.getName(), memberProfile.getPhoneNum(), memberProfile.getEmail(),memberProfile.getProfileImageUrl());
             log.info("OAuthService에서 기존 회원 업데이트");
-            return memberRepository.save(existingMember);
+            return memberRepository.save(existingMember); // 업데이트 된 사용자 저장
         } else {
             Member newMember = memberProfile.toMember();
             log.info("OAuthService에서 신규 회원 저장");
-            return memberRepository.save(newMember);
+            return memberRepository.save(newMember); // 신규 사용자 저장
         }
     }
-
 }

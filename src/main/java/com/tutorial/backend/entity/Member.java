@@ -11,6 +11,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member {
 
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -28,19 +29,19 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private Authority authority;
 
-
     @OneToMany(mappedBy = "member")
     private List<ChattingHeader> chattingHeaders;
 
-    @OneToMany(mappedBy = "friend")
+    @OneToMany(mappedBy = "member")
     private List<Friend> friends;
 
-    @OneToOne
-    @JoinColumn(name = "profile_image_file_id")
-    private File profileImage;
+    @OneToMany(mappedBy = "friendId")
+    private List<Friend> addedFriends;
+
+    private String profileImageUrl;
 
     @Builder
-    public Member(Long id, String memberEmail, String memberName, String memberPhone, StatusType status, Authority authority, List<ChattingHeader> chattingHeaders, List<Friend> friends, File profileImage) {
+    public Member(Long id, String memberEmail, String memberName, String memberPhone, StatusType status, Authority authority, List<ChattingHeader> chattingHeaders, List<Friend> friends, List<Friend> addedFriends, String profileImageUrl) {
         this.id = id;
         this.memberEmail = memberEmail;
         this.memberName = memberName;
@@ -49,8 +50,10 @@ public class Member {
         this.authority = authority;
         this.chattingHeaders = chattingHeaders;
         this.friends = friends;
-        this.profileImage = profileImage;
+        this.addedFriends = addedFriends;
+        this.profileImageUrl = profileImageUrl;
     }
+
 
 
     public void setMemberEmail(String memberEmail) {
@@ -85,21 +88,27 @@ public class Member {
         this.friends = friends;
     }
 
-    public void setProfileImage(File profileImage) {
-        this.profileImage = profileImage;
+    public void setAddedFriends(List<Friend> addedFriends) {
+        this.addedFriends = addedFriends;
     }
 
-    public Member update(String memberName, String memberPhoneNumber, String memberEmail){
+    public void setProfileImageUrl(String profileImageUrl) {
+        this.profileImageUrl = profileImageUrl;
+    }
+
+    public Member update(String memberName, String memberPhoneNumber, String memberEmail, String profileImageUrl){
         this.setMemberName(memberName);
         this.setMemberPhone(memberPhoneNumber);
         this.setMemberEmail(memberEmail);
+        this.profileImageUrl = profileImageUrl;
         return this;
     }
 
 
-    public Member update(String name, String email) {
+    public Member update(String name, String email, String profileImageUrl) {
         this.memberName = name;
         this.memberEmail = email;
+        this.profileImageUrl = profileImageUrl;
         return this;
     }
 }

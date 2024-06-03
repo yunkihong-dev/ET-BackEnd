@@ -18,9 +18,9 @@ public class QMember extends EntityPathBase<Member> {
 
     private static final long serialVersionUID = 934286536L;
 
-    private static final PathInits INITS = PathInits.DIRECT2;
-
     public static final QMember member = new QMember("member1");
+
+    public final ListPath<Friend, QFriend> addedFriends = this.<Friend, QFriend>createList("addedFriends", Friend.class, QFriend.class, PathInits.DIRECT2);
 
     public final EnumPath<com.tutorial.backend.entity.type.Authority> authority = createEnum("authority", com.tutorial.backend.entity.type.Authority.class);
 
@@ -36,29 +36,20 @@ public class QMember extends EntityPathBase<Member> {
 
     public final StringPath memberPhone = createString("memberPhone");
 
-    public final QFile profileImage;
+    public final StringPath profileImageUrl = createString("profileImageUrl");
 
     public final EnumPath<com.tutorial.backend.entity.type.StatusType> status = createEnum("status", com.tutorial.backend.entity.type.StatusType.class);
 
     public QMember(String variable) {
-        this(Member.class, forVariable(variable), INITS);
+        super(Member.class, forVariable(variable));
     }
 
     public QMember(Path<? extends Member> path) {
-        this(path.getType(), path.getMetadata(), PathInits.getFor(path.getMetadata(), INITS));
+        super(path.getType(), path.getMetadata());
     }
 
     public QMember(PathMetadata metadata) {
-        this(metadata, PathInits.getFor(metadata, INITS));
-    }
-
-    public QMember(PathMetadata metadata, PathInits inits) {
-        this(Member.class, metadata, inits);
-    }
-
-    public QMember(Class<? extends Member> type, PathMetadata metadata, PathInits inits) {
-        super(type, metadata, inits);
-        this.profileImage = inits.isInitialized("profileImage") ? new QFile(forProperty("profileImage"), inits.get("profileImage")) : null;
+        super(Member.class, metadata);
     }
 
 }

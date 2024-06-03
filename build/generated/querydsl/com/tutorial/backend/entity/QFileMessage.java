@@ -44,7 +44,7 @@ public class QFileMessage extends EntityPathBase<FileMessage> {
 
     public QFileMessage(Class<? extends FileMessage> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.file = inits.isInitialized("file") ? new QFile(forProperty("file"), inits.get("file")) : null;
+        this.file = inits.isInitialized("file") ? new QFile(forProperty("file")) : null;
     }
 
 }

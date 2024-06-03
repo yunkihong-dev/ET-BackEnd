@@ -33,24 +33,21 @@ public class AuthService {
 
     @Transactional
     public Optional<Member> getMemberByEmail(String email) {
-        return Optional.ofNullable(memberRepository.findByMemberEmail(email).get());
+        return memberRepository.findByMemberEmail(email);
     }
 
     @Transactional
-    public TokenDto socialLogin(String email, String name) {
+    public TokenDto socialLogin(String email, String name, String phone) {
         Optional<Member> optionalMember = memberRepository.findByMemberEmail(email);
-        if (optionalMember.isPresent()) {
-            return updateAndLogin(optionalMember.get(), name);
-        } else {
-            return signupAndLogin(email, name);
-        }
+        return optionalMember.map(member -> updateAndLogin(member, name, phone)).orElseGet(() -> signupAndLogin(email, name, phone));
     }
 
-    private TokenDto signupAndLogin(String email, String name) {
+    private TokenDto signupAndLogin(String email, String name, String phone) {
         log.info("Sign up new member: " + email);
         Member newMember = Member.builder()
                 .memberEmail(email)
                 .memberName(name)
+                .memberPhone(phone)
                 .status(StatusType.ABLE)
                 .authority(Authority.USER)
                 .build();
@@ -63,9 +60,10 @@ public class AuthService {
         return tokenDto;
     }
 
-    private TokenDto updateAndLogin(Member member, String name) {
+    private TokenDto updateAndLogin(Member member, String name, String phone) {
         log.info("Updating member: " + member.getMemberEmail());
         member.setMemberName(name);
+        member.setMemberPhone(phone);
         memberRepository.save(member);
 
         MemberDetail memberDetail = new MemberDetail(member);

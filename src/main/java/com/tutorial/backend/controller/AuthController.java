@@ -22,7 +22,6 @@ public class AuthController {
     private final AuthService authService;
     private final MemberService memberService;
 
-    private static final String REDIRECT_URI = "http://localhost:3000/login/moreInfo";
 
     @PostMapping("/reissue")
     public ResponseEntity<TokenDto> reissue(@RequestBody TokenRequestDto tokenRequestDto) {
@@ -30,12 +29,14 @@ public class AuthController {
     }
 
     @GetMapping("/user")
-    public ResponseEntity<ResultDto<String>> getUserDetails(Authentication authentication) {
+    public ResponseEntity<ResultDto<MemberDto>> getUserDetails(Authentication authentication, MemberDto memberDto) {
         // 사용자 정보를 기반으로 회원 정보를 조회하여 반환
         MemberDetail principal = (MemberDetail) authentication.getPrincipal();
+        memberDto.setName(principal.getName());
+        memberDto.setProfileUrl(principal.getMember().getProfileImageUrl());
         try {
             return ResponseEntity.ok()
-                    .body(ResultDto.res(HttpStatus.ACCEPTED, "회원정보를 조회해왔습니다", principal.getName()));
+                    .body(ResultDto.res(HttpStatus.ACCEPTED, "회원정보를 조회해왔습니다",memberDto));
         } catch (Exception exception) {
             log.error("회원 정보를 조회하는 중에 오류가 발생했습니다.", exception);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
