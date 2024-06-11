@@ -8,6 +8,5 @@ import java.util.List;
 
 public interface FriendService {
     public Friend addNewFriend(String name, Member friend, Member me);
-
-    public List<FriendDto> getMyFriends(Long myId);
+    public List<FriendDto> getAllFriendsByMemberId(Long memberId);
 }

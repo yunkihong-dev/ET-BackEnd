@@ -1,24 +1,16 @@
 package com.tutorial.backend.controller.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
-import org.springframework.stereotype.Component;
 
-@Component
 @Getter
 @Setter
-@ToString
-@NoArgsConstructor
+@AllArgsConstructor
 public class FriendDto {
-    Long id;
-    String friendName;
-    String friendProfileImage;
-
-    public FriendDto(Long id, String friendName, String friendProfileImage) {
-        this.id = id;
-        this.friendName = friendName;
-        this.friendProfileImage = friendProfileImage;
-    }
+    private Long friendMemberId;
+    private String isRegistered;
+    private String nickname;
+    private String friendName;
+    private String friendProfileImageUrl;
 }

@@ -22,9 +22,9 @@ public class QFriend extends EntityPathBase<Friend> {
 
     public static final QFriend friend = new QFriend("friend");
 
-    public final QMember friendId;
+    public final QMember friendMember;
 
-    public final NumberPath<Integer> id = createNumber("id", Integer.class);
+    public final NumberPath<Long> friendMemberId = createNumber("friendMemberId", Long.class);
 
     public final StringPath isRegistered = createString("isRegistered");
 
@@ -50,7 +50,7 @@ public class QFriend extends EntityPathBase<Friend> {
 
     public QFriend(Class<? extends Friend> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.friendId = inits.isInitialized("friendId") ? new QMember(forProperty("friendId")) : null;
+        this.friendMember = inits.isInitialized("friendMember") ? new QMember(forProperty("friendMember")) : null;
         this.member = inits.isInitialized("member") ? new QMember(forProperty("member")) : null;
     }
 

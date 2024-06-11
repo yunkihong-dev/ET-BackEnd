@@ -7,10 +7,11 @@ import lombok.*;
 import javax.persistence.*;
 import java.util.List;
 
-@Table(name = "tbl_member") @Entity @Getter
+@Table(name = "tbl_member")
+@Entity
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member {
-
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,7 +36,7 @@ public class Member {
     @OneToMany(mappedBy = "member")
     private List<Friend> friends;
 
-    @OneToMany(mappedBy = "friendId")
+    @OneToMany(mappedBy = "friendMember")
     private List<Friend> addedFriends;
 
     private String profileImageUrl;
@@ -53,8 +54,6 @@ public class Member {
         this.addedFriends = addedFriends;
         this.profileImageUrl = profileImageUrl;
     }
-
-
 
     public void setMemberEmail(String memberEmail) {
         this.memberEmail = memberEmail;
@@ -103,7 +102,6 @@ public class Member {
         this.profileImageUrl = profileImageUrl;
         return this;
     }
-
 
     public Member update(String name, String email, String profileImageUrl) {
         this.memberName = name;

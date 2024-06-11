@@ -1,6 +1,5 @@
 package com.tutorial.backend.controller;
 
-import com.sun.mail.iap.Response;
 import com.tutorial.backend.controller.dto.FriendDto;
 import com.tutorial.backend.controller.dto.NewFriendRequest;
 import com.tutorial.backend.controller.dto.ResultDto;
@@ -35,7 +34,6 @@ public class FriendController {
 
         String name = newFriendRequest.getName();
         String fullPhoneNumber = newFriendRequest.getFullPhoneNumber();
-        log.info("이름 : " + name + ", 전번 : " + fullPhoneNumber);
         Optional<Member> foundMember = memberService.getMemberByPhoneNumber(fullPhoneNumber);
         if (foundMember.isPresent()) {
             Friend friend = friendService.addNewFriend(name, foundMember.get(), me);
@@ -48,20 +46,10 @@ public class FriendController {
     }
 
     @GetMapping("getFriends")
-    public ResponseEntity<ResultDto<List<FriendDto>>> getFriendList(Authentication authentication) {
-        try {
-            MemberDetail principal = (MemberDetail) authentication.getPrincipal();
-            Long myId = principal.getId();
-
-            List<FriendDto> myFriends = friendService.getMyFriends(myId);
-
-            String message = myFriends.isEmpty() ? "친구가 없어요 ㅜㅠ" : "친구가 불러와졌어요";
-            return ResponseEntity.ok().body(ResultDto.res(HttpStatus.ACCEPTED, message, myFriends));
-        } catch (Exception e) {
-            // 로그를 남겨서 문제를 추적할 수 있도록 합니다.
-            log.error("Error occurred while getting friends list", e);
-            return ResponseEntity.internalServerError().body(ResultDto.res(HttpStatus.INTERNAL_SERVER_ERROR, "서버오류"));
-        }
+    public ResponseEntity<ResultDto<List<FriendDto>>> getMyFriends(Authentication authentication){
+        MemberDetail principal = (MemberDetail) authentication.getPrincipal();
+        List<FriendDto> myFriends = friendService.getAllFriendsByMemberId(principal.getId());
+        return ResponseEntity.ok().body(ResultDto.res(HttpStatus.ACCEPTED,"친구를 불러왔습니다!",myFriends));
     }
 
 }
